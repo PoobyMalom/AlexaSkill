@@ -12,7 +12,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
-public class GetBookLength {
+public class GetRating {
     public String searchBook(String searchKey) {
         HttpURLConnection httpURLConnection = buildHttpGetRequest(searchKey);
         InputStream responseStream = executeHttpRequest(httpURLConnection);
@@ -82,7 +82,10 @@ public class GetBookLength {
                     .get("average_rating")
                     .toString();
 
-            return Integer.toString(Math.(Integer.parseInt(rating) * 10)/10);
+            float frating = Float.parseFloat(rating)*10;
+            float frating1 = (float) Math.round(frating);
+            float end = frating1 / 10;
+            return Float.toString(end);
 
         } catch (Exception ignored) {}
         return null;
