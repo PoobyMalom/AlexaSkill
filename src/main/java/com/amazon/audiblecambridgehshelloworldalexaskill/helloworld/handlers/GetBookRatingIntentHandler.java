@@ -5,17 +5,14 @@ import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.*;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.amazon.ask.request.Predicates.intentName;
 
 public class GetBookRatingIntentHandler implements RequestHandler {
 
     public boolean canHandle(HandlerInput input) {
-        return input.matches(intentName("GetRatingIntent"));
+        return input.matches(intentName("GetBookRatingIntent"));
     }
 
     @Override
@@ -27,10 +24,12 @@ public class GetBookRatingIntentHandler implements RequestHandler {
 
         GetRating getRating = new GetRating();
         String rating = getRating.searchBook(slots.get("RatingBookNameSlot").getValue());
+        log(input, rating);
 
         if (slots.containsKey("RatingBookNameSlot") && null != slots.get("RatingBookNameSlot").getValue()) {
             if (rating != null) {
-                speechText.append(slots.get("RatingBookName").getValue()).append(" Has a Rating of ").append(rating);
+                speechText.append(slots.get("RatingBookNameSlot").getValue()).append(" Has a Rating of ").append(rating);
+                log(input, "added message");
             }
             else {
                 speechText.append("cannot find the rating of the book");
@@ -39,7 +38,7 @@ public class GetBookRatingIntentHandler implements RequestHandler {
 
         return input.getResponseBuilder()
                 .withSpeech(speechText.toString()) // alexa says this
-                .withSimpleCard("Removed", speechText.toString()) // alexa will show this on a screen
+                .withSimpleCard(rating, speechText.toString()) // alexa will show this on a screen
                 .build();
     }
 
@@ -49,5 +48,24 @@ public class GetBookRatingIntentHandler implements RequestHandler {
         IntentRequest intentRequest = (IntentRequest) request;
         Intent intent = intentRequest.getIntent();
         return Collections.unmodifiableMap(intent.getSlots());
+    }
+
+    void logSlots(HandlerInput input) {
+        Map<String, Slot> slots = getSlots(input);
+        // log slot values including request id and time for debugging
+        for(String key : slots.keySet()) {
+            log(input, String.format("Slot value key=%s, value = %s", key, slots.get(key).toString()));
+        }
+    }
+
+    /**
+     * Logs debug messages in an easier to search way
+     * You can also use system. Out, but it'll be harder to work with
+     */
+    void log(HandlerInput input, String message) {
+        System.out.printf("[%s] [%s] : %s]\n",
+                input.getRequestEnvelope().getRequest().getRequestId().toString(),
+                new Date(),
+                message);
     }
 }

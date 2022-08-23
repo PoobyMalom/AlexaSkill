@@ -26,6 +26,7 @@ public class SkillHandler extends SkillStreamHandler {
                         new AddBookIntentHandler(),
                         new GetBookListIntentHandler(),
                         new GetBookListsIntentHandler(),
+                        new GetBookRatingIntentHandler(),
                         new RemoveListIntentHandler())
                 // Add your skill id below if you want? Not sure why.
                 //.withSkillId("")
