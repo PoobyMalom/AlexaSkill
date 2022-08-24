@@ -15,7 +15,6 @@ import static com.amazon.ask.request.Predicates.intentName;
 
 public class RemoveListIntentHandler implements RequestHandler{
     public final String textWithBook = "<speak> %s successfully deleted </speak>"; //TODO add list name
-    public final String textWithoutBook = "<speak> could not find a %s </speak>";
 
     final AmazonDynamoDB dynamoDb = AmazonDynamoDBClientBuilder.standard().build();
 
@@ -37,11 +36,11 @@ public class RemoveListIntentHandler implements RequestHandler{
 
         if (slots.containsKey("RemoveListSlot") && null != slots.get("RemoveListSlot").getValue()) {
             speechText = String.format(textWithBook, slots.get("RemoveListSlot").getValue());
-            dynamoDao.deleteReadingList(slots.get("RemoveListSlot").getValue());
+            dynamoDao.clearList(slots.get("RemoveListSlot").getValue());
         }
         else {
             speechText = "Reading List successfully Deleted";
-            dynamoDao.deleteReadingList("reading list");
+            dynamoDao.clearList("reading list");
         }
 
         return input.getResponseBuilder()

@@ -8,10 +8,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import dao.DynamoDao;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.amazon.ask.request.Predicates.intentName;
 
@@ -29,16 +26,32 @@ public class GetBookListsIntentHandler implements RequestHandler {
 
         Map<String, Slot> slots = getSlots(input);
 
-        List<Map<String, AttributeValue>> maps = dynamoDao.retrieveListsInReadingLists(slots.get("GetListNameSlot").getValue());
 
         StringBuilder speechText = new StringBuilder();
 
-        for (Map<String, AttributeValue> map: maps) {
-            for (AttributeValue book : map.values()) {
-                String text = book.getS();
-                speechText.append(" ").append(text);
+
+
+        if(slots.containsKey("GetListNameSlot") && null != slots.get("GetListNameSlot").getValue()) {
+            List<Map<String, AttributeValue>> maps = dynamoDao.retrieveListsInReadingLists(slots.get("GetListNameSlot").getValue());
+            speechText.append("Your ").append(slots.get("GetListNameSlot").getValue()).append(" list has");
+            for (Map<String, AttributeValue> map: maps) {
+
+
+                String text = map.get("book_name").getS();
+                speechText.append(", ").append(text);
+                }
+            }
+        else {
+            List<Map<String, AttributeValue>> maps = dynamoDao.retrieveListsInReadingLists("reading list");
+            for (Map<String, AttributeValue> map: maps) {
+                for (AttributeValue book : map.values()) {
+                    String text = book.getS();
+                    speechText.append(" ").append(text);
+                }
             }
         }
+
+
 
         return input.getResponseBuilder()
                 .withSpeech(speechText.toString()) // alexa says this
@@ -53,5 +66,11 @@ public class GetBookListsIntentHandler implements RequestHandler {
         Intent intent = intentRequest.getIntent();
         return Collections.unmodifiableMap(intent.getSlots());
     }
+
+    /*
+     * Logs debug messages in an easier to search way
+     * You can also use system. Out, but it'll be harder to work with
+     */
+
 
 }

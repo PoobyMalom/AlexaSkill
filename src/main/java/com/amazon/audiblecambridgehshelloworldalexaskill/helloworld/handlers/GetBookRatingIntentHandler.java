@@ -3,7 +3,6 @@ package com.amazon.audiblecambridgehshelloworldalexaskill.helloworld.handlers;
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.*;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 
 import java.util.*;
 
@@ -50,13 +49,7 @@ public class GetBookRatingIntentHandler implements RequestHandler {
         return Collections.unmodifiableMap(intent.getSlots());
     }
 
-    void logSlots(HandlerInput input) {
-        Map<String, Slot> slots = getSlots(input);
-        // log slot values including request id and time for debugging
-        for(String key : slots.keySet()) {
-            log(input, String.format("Slot value key=%s, value = %s", key, slots.get(key).toString()));
-        }
-    }
+
 
     /**
      * Logs debug messages in an easier to search way
@@ -64,7 +57,7 @@ public class GetBookRatingIntentHandler implements RequestHandler {
      */
     void log(HandlerInput input, String message) {
         System.out.printf("[%s] [%s] : %s]\n",
-                input.getRequestEnvelope().getRequest().getRequestId().toString(),
+                input.getRequestEnvelope().getRequest().getRequestId(),
                 new Date(),
                 message);
     }

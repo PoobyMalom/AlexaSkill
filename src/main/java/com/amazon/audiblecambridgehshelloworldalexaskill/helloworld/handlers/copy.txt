@@ -1,4 +1,0 @@
-Add this to the intent handler that needs it
-
-final AmazonDynamoDB dynamoDb = AmazonDynamoDBClientBuilder.standard().build();
-final DynamoDao dynamoDao = new DynamoDao(dynamoDb);

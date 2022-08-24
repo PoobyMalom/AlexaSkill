@@ -21,7 +21,7 @@ public class LaunchRequestHandler implements RequestHandler {
         String speechText = "Welcome to your reading list";
         return input.getResponseBuilder()
                 .withSpeech(speechText)
-                .withSimpleCard("HelloWorld", speechText)
+                .withSimpleCard("Welcome to your reading list", speechText)
                 .withReprompt(speechText)
                 .build();
     }

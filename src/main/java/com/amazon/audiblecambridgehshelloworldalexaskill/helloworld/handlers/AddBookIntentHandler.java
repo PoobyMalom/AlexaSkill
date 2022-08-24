@@ -12,16 +12,11 @@ import com.amazon.ask.model.Slot;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import dao.DynamoDao;
 
-
-import java.awt.print.Book;
 import java.util.*;
 
 import static com.amazon.ask.request.Predicates.intentName;
 
 public class AddBookIntentHandler implements RequestHandler {
-
-    private final String speechTextWithBook = "<speak> Added %s to your %s </speak>";
-    private final String speechTextNoBookName = "No book given";
 
     final AmazonDynamoDB dynamoDb = AmazonDynamoDBClientBuilder.standard().build();
     final DynamoDao dynamoDao = new DynamoDao(dynamoDb);
@@ -49,6 +44,7 @@ public class AddBookIntentHandler implements RequestHandler {
 
         if(slots.containsKey("BookNameSlot") && null != slots.get("BookNameSlot").getValue()) {
             //add to book database later
+            String speechTextWithBook = "<speak> Added %s to your %s </speak>";
             if(slots.containsKey("ListNameSlot") && null != slots.get("ListNameSlot").getValue()) {
                 dynamoDao.addBookToReadingList(slots.get("BookNameSlot").getValue() + " By " + author,
                         slots.get("ListNameSlot").getValue());
@@ -64,7 +60,7 @@ public class AddBookIntentHandler implements RequestHandler {
 
 
         } else {
-            speechText = speechTextNoBookName;
+            speechText = "No book given";
         }
 
 
@@ -74,8 +70,7 @@ public class AddBookIntentHandler implements RequestHandler {
         List<Map<String, AttributeValue>> maps = dynamoDao.retrieveBooksInReadingList();
         log(handlerInput, "DynamoDb responses " + maps);
 
-        String key = "BOOKNAME";
-        String value = slots.get("BookNameSlot").getValue();
+
 
         log(handlerInput, "Speech text response is " + speechText);
 
@@ -108,7 +103,7 @@ public class AddBookIntentHandler implements RequestHandler {
      */
     void log(HandlerInput input, String message) {
         System.out.printf("[%s] [%s] : %s]\n",
-                input.getRequestEnvelope().getRequest().getRequestId().toString(),
+                input.getRequestEnvelope().getRequest().getRequestId(),
                 new Date(),
                 message);
     }

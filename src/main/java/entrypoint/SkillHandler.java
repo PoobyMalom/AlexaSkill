@@ -1,11 +1,9 @@
 package entrypoint;
 
 import com.amazon.ask.Skill;
-import com.amazon.ask.Skills;
 import com.amazon.ask.SkillStreamHandler;
+import com.amazon.ask.Skills;
 import com.amazon.audiblecambridgehshelloworldalexaskill.helloworld.handlers.*;
-
-import java.awt.print.Book;
 
 /**
  * This skill is the entry point the skill

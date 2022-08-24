@@ -1,7 +1,6 @@
 package dao;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.datamodeling.AttributeTransformer;
 import com.amazonaws.services.dynamodbv2.model.*;
 
 import java.util.HashMap;
@@ -30,12 +29,12 @@ public class DynamoDao {
     }
 
     // Write to Dynamo DB
-    public boolean addBookToReadingList(String bookName, String listName) {
+    public void addBookToReadingList(String bookName, String listName) {
         try {
 
             Map<String, AttributeValue> itemAttributesMap = new HashMap<>();
-            itemAttributesMap.put(BOOK_NAME, new AttributeValue().withS(bookName.toLowerCase()));
-            itemAttributesMap.put(LIST_NAME, new AttributeValue().withS(listName.toLowerCase()));
+            itemAttributesMap.put(BOOK_NAME, new AttributeValue().withS(bookName));
+            itemAttributesMap.put(LIST_NAME, new AttributeValue().withS(listName));
 
 
             PutItemRequest putItemRequest = new PutItemRequest()
@@ -43,10 +42,8 @@ public class DynamoDao {
                     .withItem(itemAttributesMap);
 
             dynamoDb.putItem(putItemRequest);
-            return true;
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
-            return false;
         }
     }
 
@@ -58,8 +55,7 @@ public class DynamoDao {
                 // prevent timeout and extra costs
                 .withLimit(100);
         final ScanResult scanResult = dynamoDb.scan(scanRequest);
-        List<Map<String, AttributeValue>> items = scanResult.getItems();
-        return items;
+        return scanResult.getItems();
     }
 
     public List<Map<String, AttributeValue>> retrieveListsInReadingLists(String listName) {
@@ -77,12 +73,12 @@ public class DynamoDao {
                 .withExpressionAttributeValues(expressionAttributeValues);
 
         QueryResult queryResult = dynamoDb.query(queryRequest);
-        List<Map<String, AttributeValue>> items = queryResult.getItems();
-        return items;
+        return queryResult.getItems();
 
     }
 
-    public boolean deleteReadingList(String listName) {
+    /*
+    public void deleteReadingList(String listName) {
         try {
             Map<String, AttributeValue> itemAttributesMapBooks = new HashMap<>();
             itemAttributesMapBooks.put(BOOK_NAME, new AttributeValue().withS(listName));
@@ -98,21 +94,57 @@ public class DynamoDao {
             for (Map<String, AttributeValue> item : items) {
                 DeleteItemRequest deleteList = new DeleteItemRequest()
                         .withTableName(TABLE_NAME)
-                        .withKey(item)
-                        ;
+                        .withKey(item);
 
                 System.out.println(deleteList);
-                dynamoDb.deleteItem(listName, item);
+                dynamoDb.deleteItem(listName.toLowerCase(), item);
             }
 
             Map<String, AttributeValue> itemAttributesMap = new HashMap<>();
             itemAttributesMap.put(LIST_NAME, new AttributeValue().withS(listName));
 
             System.out.println("done");
-            return true;
         }
-        catch (Exception e) {
-            return false;
+        catch (Exception ignored) {
+        }
+    }
+     */
+
+    public void removeBookFromReadingList(Map<String, AttributeValue> item) {
+        DeleteItemRequest deleteReq = new DeleteItemRequest()
+                .withTableName(TABLE_NAME)
+                .withKey(item);
+
+        try {
+            System.out.println(item.toString());
+
+            dynamoDb.deleteItem(deleteReq);
+            System.out.println("deleted");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    public void clearList(String list)
+    {
+        try {
+            List<Map<String, AttributeValue>> bookList;
+            bookList = retrieveListsInReadingLists(list);
+            System.out.println("books retrieved");
+            bookList.forEach(item -> {
+                System.out.println("entered for loop");
+                System.out.println(item);
+                removeBookFromReadingList(item);
+                System.out.println("removed, end for loop");
+            });
+
+            System.out.println("out of for loop, returns true");
+
+        }
+        catch (Exception e)
+        {
+            System.out.println("error: " + e);
         }
     }
 

@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Optional;
 import static com.amazon.ask.request.Predicates.requestType;
 public class SessionEndedRequestHandler implements RequestHandler {
-    private final String endOfProgram = "<speak> Closing Program </speak>";
+    //private final String endOfProgram = "<speak> Closing Program </speak>";
     @Override
     public boolean canHandle(HandlerInput input) {
         return input.matches(requestType(SessionEndedRequest.class));
@@ -20,7 +20,7 @@ public class SessionEndedRequestHandler implements RequestHandler {
     }
     void log(HandlerInput input, String message) {
         System.out.printf("[%s] [%s] : %s]\n",
-                input.getRequestEnvelope().getRequest().getRequestId().toString(),
+                input.getRequestEnvelope().getRequest().getRequestId(),
                 new Date(),
                 message);
     }
