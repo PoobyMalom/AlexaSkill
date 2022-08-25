@@ -77,7 +77,7 @@ public class AddBookIntentHandler implements RequestHandler {
         // response object with a card (shown on devices with a screen) and speech (what alexa says)
         return handlerInput.getResponseBuilder()
                 .withSpeech(speechText) // alexa says this
-                .withSimpleCard("HelloWorld", speechText) // alexa will show this on a screen
+                .withSimpleCard("Book Added", speechText.substring(7, speechText.length()-8)) // alexa will show this on a screen
                 .build();
     }
 

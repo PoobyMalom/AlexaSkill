@@ -18,14 +18,14 @@ public class SkillHandler extends SkillStreamHandler {
                         new CancelandStopIntentHandler(),
                         new HelpIntentHandler(),
                         new LaunchRequestHandler(),
-                        new SessionEndedRequestHandler(),
                         new FallbackIntentHandler(),
                         new BookRemoveIntentHandler(),
                         new AddBookIntentHandler(),
                         new GetBookListIntentHandler(),
                         new GetBookListsIntentHandler(),
                         new GetBookRatingIntentHandler(),
-                        new RemoveListIntentHandler())
+                        new RemoveListIntentHandler(),
+                        new SessionEndedRequestHandler())
                 // Add your skill id below if you want? Not sure why.
                 //.withSkillId("")
                 .build();
