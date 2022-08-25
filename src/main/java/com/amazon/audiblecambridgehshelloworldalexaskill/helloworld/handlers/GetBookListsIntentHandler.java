@@ -55,7 +55,7 @@ public class GetBookListsIntentHandler implements RequestHandler {
 
         return input.getResponseBuilder()
                 .withSpeech(speechText.toString()) // alexa says this
-                .withSimpleCard("Whats on your list", speechText.substring(7, speechText.length()-8)) // alexa will show this on a screen
+                .withSimpleCard("Whats on your list", speechText.toString()) // alexa will show this on a screen
                 .build();
     }
 

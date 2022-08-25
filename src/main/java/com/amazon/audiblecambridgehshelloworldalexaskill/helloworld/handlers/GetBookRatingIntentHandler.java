@@ -38,7 +38,7 @@ public class GetBookRatingIntentHandler implements RequestHandler {
         return input.getResponseBuilder()
                 .withSpeech(speechText.toString()) // alexa says this
                 .withSimpleCard(slots.get("RatingBookNameSlot").getValue() + " Rating",
-                        speechText.substring(7, speechText.length()-8)) // alexa will show this on a screen
+                        speechText.toString()) // alexa will show this on a screen
                 .build();
     }
 

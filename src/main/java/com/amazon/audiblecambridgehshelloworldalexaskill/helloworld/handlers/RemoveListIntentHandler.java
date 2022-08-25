@@ -45,7 +45,7 @@ public class RemoveListIntentHandler implements RequestHandler{
 
         return input.getResponseBuilder()
                 .withSpeech(speechText) // alexa says this
-                .withSimpleCard("Removed",  speechText.substring(7, speechText.length()-8)) // alexa will show this on a screen
+                .withSimpleCard("Removed",  speechText) // alexa will show this on a screen
                 .build();
     }
 
